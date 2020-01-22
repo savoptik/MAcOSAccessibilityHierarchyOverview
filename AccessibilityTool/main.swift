@@ -8,5 +8,13 @@
 
 import Foundation
 
-print("Hello, World!")
+let cl = CommandLineParser(cmdLineParametrs: CommandLine.arguments)
+switch cl.workMode {
+case .error:
+    print(cl.errMessage!)
+case .help:
+    print(cl.errMessage!)
+case .a11yScan:
+    print("Будем распознавать окно \(cl.windowName!)")
+}
 
