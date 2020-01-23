@@ -9,11 +9,12 @@
 import Foundation
 
 let helpMessage = "Справка по командам\n" +
-"  -h  --help — справка\n" +
-"  -g  --getHierarchy — Получить иерархию a11y объектов для окна"
+"  -l --list — Список окон\n" +
+"  -g  --getHierarchy — Получить иерархию a11y объектов для окна\n" +
+"  -h  --help — справка"
 
 public enum WorkMode: String {
-    case a11yScan, help, error
+    case a11yScan, help, error, list
 }
 
 public class CommandLineParser {
@@ -50,6 +51,18 @@ public class CommandLineParser {
             } else {
                 mode = .error
                 mEssage = "Слишком много параметров для команды \"help\""
+                name = nil
+            }
+            return
+        }
+        if (cmdLineParametrs[1] == "-l") || (cmdLineParametrs[1] == "--list") {
+            if cmdLineParametrs.count == 2 {
+                mode = .list
+                mEssage = nil
+                name = nil
+            } else {
+                mode = .error
+                mEssage = "Слишком много параметров для команды \"list\""
                 name = nil
             }
             return
