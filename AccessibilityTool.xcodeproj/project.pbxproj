@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		FE1D456723D8457A00B308E6 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1D456623D8457A00B308E6 /* main.swift */; };
 		FE1D456F23D84E9300B308E6 /* CommandLineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1D456E23D84E9300B308E6 /* CommandLineParser.swift */; };
+		FE1D457123D86A1100B308E6 /* WindowListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1D457023D86A1100B308E6 /* WindowListManager.swift */; };
+		FE7AB4D923D9B0EA00EF2A8D /* AXController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AB4D823D9B0EA00EF2A8D /* AXController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +30,10 @@
 		FE1D456623D8457A00B308E6 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		FE1D456D23D8474F00B308E6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FE1D456E23D84E9300B308E6 /* CommandLineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineParser.swift; sourceTree = "<group>"; };
+		FE1D457023D86A1100B308E6 /* WindowListManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowListManager.swift; sourceTree = "<group>"; };
+		FE7AB4D723D9B0EA00EF2A8D /* AccessibilityTool-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AccessibilityTool-Bridging-Header.h"; sourceTree = "<group>"; };
+		FE7AB4D823D9B0EA00EF2A8D /* AXController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AXController.m; sourceTree = "<group>"; };
+		FE7AB4DA23D9B11000EF2A8D /* AXController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AXController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,8 +69,20 @@
 			children = (
 				FE1D456623D8457A00B308E6 /* main.swift */,
 				FE1D456E23D84E9300B308E6 /* CommandLineParser.swift */,
+				FE1D457023D86A1100B308E6 /* WindowListManager.swift */,
+				FE7AB4DB23D9B15E00EF2A8D /* AXController */,
+				FE7AB4D723D9B0EA00EF2A8D /* AccessibilityTool-Bridging-Header.h */,
 			);
 			path = AccessibilityTool;
+			sourceTree = "<group>";
+		};
+		FE7AB4DB23D9B15E00EF2A8D /* AXController */ = {
+			isa = PBXGroup;
+			children = (
+				FE7AB4DA23D9B11000EF2A8D /* AXController.h */,
+				FE7AB4D823D9B0EA00EF2A8D /* AXController.m */,
+			);
+			path = AXController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,6 +117,7 @@
 				TargetAttributes = {
 					FE1D456223D8457900B308E6 = {
 						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
 					};
 				};
 			};
@@ -126,6 +145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE1D456F23D84E9300B308E6 /* CommandLineParser.swift in Sources */,
+				FE1D457123D86A1100B308E6 /* WindowListManager.swift in Sources */,
+				FE7AB4D923D9B0EA00EF2A8D /* AXController.m in Sources */,
 				FE1D456723D8457A00B308E6 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -249,10 +270,18 @@
 		FE1D456B23D8457A00B308E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3KRK236DU7;
 				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AccessibilityTool/AccessibilityTool-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -260,10 +289,17 @@
 		FE1D456C23D8457A00B308E6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3KRK236DU7;
 				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AccessibilityTool/AccessibilityTool-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
