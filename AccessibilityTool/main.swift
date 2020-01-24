@@ -22,8 +22,8 @@ case .list:
     }
 
 case .a11yScan:
-    print("Иерархия для процесса: \(Int(cl.windowName!)!)")
-    if let pid = Int32(cl.windowName!) {
+    print("Иерархия для процесса: \(cl.windowPID!)")
+    if let pid = cl.windowPID as? pid_t {
         AXController.printHierarchy(forWindowPID: pid)
     } else {
         print("Не удалось распознать PID процесса")

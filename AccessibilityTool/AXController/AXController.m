@@ -15,11 +15,18 @@
 + (void)printHierarchyForWindowPID:(pid_t)pid {
     // получаем приложение
     AXUIElementRef appRef = AXUIElementCreateApplication(pid);
+    if (!appRef) {
+        printf("по заданному PID %d  приложений не найдено\n", pid);
+        return;
+    }
     // получаем окна этого приложения
     CFArrayRef windowList;
     AXUIElementCopyAttributeValue(appRef, kAXWindowsAttribute, (CFTypeRef *)&windowList);
     // проверяем, если окон нет, выходим
-    if ((!windowList) || CFArrayGetCount(windowList)<1) return;
+    if ((!windowList) || CFArrayGetCount(windowList)<1) {
+        printf("У заданного приложения нет окон\n");
+        return;
+    }
     // выбираем окно на переднем плане
     AXUIElementRef windowRef = (AXUIElementRef)CFArrayGetValueAtIndex(windowList, 0);
     [self printHierarcghy:windowRef andLevel:0];

@@ -20,38 +20,43 @@ public enum WorkMode: String {
 public class CommandLineParser {
     private let mode: WorkMode
     private let mEssage: String?
-    private let name: String?
+    private let pid: Int?
+    private let depth: Int?
     public var workMode: WorkMode {
         get {return mode}
     }
     public var errMessage: String? {
         get {return mEssage}
     }
-    public var windowName: String? {
-        get {return name}
+    public var windowPID: Int? {
+        get {return pid}
     }
 
     public init(cmdLineParametrs: [String]) {
         if cmdLineParametrs.count == 1 {
             mode = .error
             mEssage = "Не введено ни одной команды\n" + helpMessage
-            name = nil
+            pid = nil
+            depth = nil
             return
-        } else if cmdLineParametrs.count > 3 {
+        } else if cmdLineParametrs.count > 4 {
             mode = .error
             mEssage = "Слишком много параметров"
-            name = nil
+            pid = nil
+            depth = nil
             return
         }
         if (cmdLineParametrs[1] == "-h") || (cmdLineParametrs[1] == "--help") {
             if cmdLineParametrs.count == 2 {
                 mode = .help
                 mEssage = helpMessage
-                name = nil
+                pid = nil
+                depth = nil
             } else {
                 mode = .error
                 mEssage = "Слишком много параметров для команды \"help\""
-                name = nil
+                pid = nil
+                depth = nil
             }
             return
         }
@@ -59,28 +64,63 @@ public class CommandLineParser {
             if cmdLineParametrs.count == 2 {
                 mode = .list
                 mEssage = nil
-                name = nil
+                pid = nil
+                depth = nil
             } else {
                 mode = .error
                 mEssage = "Слишком много параметров для команды \"list\""
-                name = nil
+                pid = nil
+                depth = nil
             }
             return
         }
         if (cmdLineParametrs[1] == "-g") || (cmdLineParametrs[1] == "--getHierarchy") {
-            if cmdLineParametrs.count == 3 {
-                mode = .a11yScan
-                mEssage = nil
-                name = cmdLineParametrs[2]
+            if cmdLineParametrs.count == 4 {
+                if let d = Int(cmdLineParametrs[3]) {
+                    depth = d
+                } else {
+depth = nil
+                }
+                if let p = Int(cmdLineParametrs[2]) {
+                    pid = p
+                } else {
+                    pid = nil
+                }
+                if let p = pid {
+                    if let d = depth {
+                        mEssage = nil
+                        mode = .a11yScan
+                    } else {
+                        mEssage = "Не удалось получить глубину обхода"
+                        mode = .error
+                    }
+                } else {
+                    mEssage = "не удалось получить PID процесса"
+                    mode = .error
+                }
+            } else if cmdLineParametrs.count == 3  {
+                if let p = Int(cmdLineParametrs[2]) {
+                    mode = .a11yScan
+                    mEssage = nil
+                    pid = p
+                    depth = 0
+                } else {
+                    mode = .error
+                    mEssage = "Не удалось получить PID процесса"
+                    pid = nil
+                    depth = nil
+                }
             } else {
                 mode = .error
                 mEssage = "Не указано имя окна"
-                name = nil
+                pid = nil
+                depth = nil
             }
             return
         }
         mode = .error
         mEssage = "Непонятная ошибка\n" + helpMessage
-        name = nil
+        pid = nil
+        depth = nil
     }
 }
