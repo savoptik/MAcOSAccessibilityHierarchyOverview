@@ -12,7 +12,7 @@
 
 @implementation AXController
 
-+ (void)printHierarchyForWindowPID:(pid_t)pid {
++ (void)printHierarchyForWindowPID:(pid_t)pid depth:(int)depth {
     // получаем приложение
     AXUIElementRef appRef = AXUIElementCreateApplication(pid);
     if (!appRef) {
@@ -29,10 +29,10 @@
     }
     // выбираем окно на переднем плане
     AXUIElementRef windowRef = (AXUIElementRef)CFArrayGetValueAtIndex(windowList, 0);
-    [self printHierarcghy:windowRef andLevel:0];
+    [self printHierarcghy:windowRef andLevel:0 depth:depth];
 }
 
-+ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level {
++ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth {
     CFTypeRef role;
     AXUIElementCopyAttributeValue(elementRef, kAXRoleAttribute, (CFTypeRef *)&role);
     NSString *strRole = CFBridgingRelease(role);
@@ -48,7 +48,9 @@
     long m = CFArrayGetCount(childrenList);
     level += 1;
     for (int i = 0; i < m; i++) {
-        [self printHierarcghy:(AXUIElementRef)CFArrayGetValueAtIndex(childrenList, i) andLevel:level];
+        if ((depth == 0) || (level < depth)) {
+            [self printHierarcghy:(AXUIElementRef)CFArrayGetValueAtIndex(childrenList, i) andLevel:level depth:depth];
+        }
     }
 }
 

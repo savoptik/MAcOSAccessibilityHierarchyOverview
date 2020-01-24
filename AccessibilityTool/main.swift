@@ -23,8 +23,10 @@ case .list:
 
 case .a11yScan:
     print("Иерархия для процесса: \(cl.windowPID!)")
-    if let pid = cl.windowPID as? pid_t {
-        AXController.printHierarchy(forWindowPID: pid)
+    if let pid: pid_t = cl.windowPID {
+        if let depth = cl.hierarchyDepth {
+            AXController.printHierarchy(forWindowPID: pid, depth: depth)
+        }
     } else {
         print("Не удалось распознать PID процесса")
     }

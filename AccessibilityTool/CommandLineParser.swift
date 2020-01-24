@@ -10,7 +10,7 @@ import Foundation
 
 let helpMessage = "Справка по командам\n" +
 "  -l --list — Список окон\n" +
-"  -g  --getHierarchy — Получить иерархию a11y объектов для окна\n" +
+"  -g  --getHierarchy — Получить иерархию a11y объектов для PID окна\n" +
 "  -h  --help — справка"
 
 public enum WorkMode: String {
@@ -20,16 +20,19 @@ public enum WorkMode: String {
 public class CommandLineParser {
     private let mode: WorkMode
     private let mEssage: String?
-    private let pid: Int?
-    private let depth: Int?
+    private let pid: Int32?
+    private let depth: Int32?
     public var workMode: WorkMode {
         get {return mode}
     }
     public var errMessage: String? {
         get {return mEssage}
     }
-    public var windowPID: Int? {
+    public var windowPID: Int32? {
         get {return pid}
+    }
+    public var hierarchyDepth: Int32? {
+        get {return depth}
     }
 
     public init(cmdLineParametrs: [String]) {
@@ -76,12 +79,12 @@ public class CommandLineParser {
         }
         if (cmdLineParametrs[1] == "-g") || (cmdLineParametrs[1] == "--getHierarchy") {
             if cmdLineParametrs.count == 4 {
-                if let d = Int(cmdLineParametrs[3]) {
+                if let d = Int32(cmdLineParametrs[3]) {
                     depth = d
                 } else {
 depth = nil
                 }
-                if let p = Int(cmdLineParametrs[2]) {
+                if let p = Int32(cmdLineParametrs[2]) {
                     pid = p
                 } else {
                     pid = nil
@@ -99,7 +102,7 @@ depth = nil
                     mode = .error
                 }
             } else if cmdLineParametrs.count == 3  {
-                if let p = Int(cmdLineParametrs[2]) {
+                if let p = Int32(cmdLineParametrs[2]) {
                     mode = .a11yScan
                     mEssage = nil
                     pid = p

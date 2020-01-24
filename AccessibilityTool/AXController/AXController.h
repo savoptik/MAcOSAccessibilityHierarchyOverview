@@ -10,7 +10,7 @@
 
 @interface AXController : NSObject
 
-+ (void)printHierarchyForWindowPID:(pid_t)pid;
-+ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level;
++ (void)printHierarchyForWindowPID:(pid_t)pid depth:(int)depth;
++ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth;
 
 @end
