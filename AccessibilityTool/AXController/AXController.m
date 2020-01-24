@@ -12,33 +12,37 @@
 
 @implementation AXController
 
-+ (NSArray<NSString *> *)getWindowList {
++ (void)printHierarchyForWindowPID:(pid_t)pid {
+    // получаем приложение
+    AXUIElementRef appRef = AXUIElementCreateApplication(pid);
+    // получаем окна этого приложения
+    CFArrayRef windowList;
+    AXUIElementCopyAttributeValue(appRef, kAXWindowsAttribute, (CFTypeRef *)&windowList);
+    // проверяем, если окон нет, выходим
+    if ((!windowList) || CFArrayGetCount(windowList)<1) return;
+    // выбираем окно на переднем плане
+    AXUIElementRef windowRef = (AXUIElementRef)CFArrayGetValueAtIndex(windowList, 0);
+    [self printHierarcghy:windowRef andLevel:0];
+}
 
-    // получить все окна
-        CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
-    NSArray* arr = CFBridgingRelease(windowList);
-    // перебираем окна
-    for (NSMutableDictionary* entry in arr) {
-        // получаем PID приложения по окну
-        pid_t pid = [[entry objectForKey:(id)kCGWindowOwnerPID] intValue];
-        // получаем ссылку на приложение
-                AXUIElementRef appRef = AXUIElementCreateApplication(pid);
-                NSLog(@"Ref = %@",appRef);
-        // получаем окна приложения
-                CFArrayRef windowList;
-        AXUIElementCopyAttributeValue(appRef, kAXWindowsAttribute, (CFTypeRef *)&windowList);
-        NSLog(@"WindowList = %@", windowList);
-        if ((windowList) && (CFArrayGetCount(windowList) >= 1)) {
-            // получение текущего первого окна
-            AXUIElementRef windowRef = (AXUIElementRef) CFArrayGetValueAtIndex( windowList, 0);
-            CFArrayRef childrenList;
-            AXUIElementCopyAttributeValue(windowRef, kAXChildrenAttribute, (CFTypeRef *)&childrenList);
-            CFStringRef name;
-            AXUIElementCopyAttributeValue((AXUIElementRef)CFArrayGetValueAtIndex(childrenList, 0), kAXLabelValueAttribute, (CFTypeRef *)&name);
-                                          NSLog(@"название первого a11y элемента %@", name);
-        }
++ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level {
+    CFTypeRef role;
+    AXUIElementCopyAttributeValue(elementRef, kAXRoleAttribute, (CFTypeRef *)&role);
+    NSString *strRole = CFBridgingRelease(role);
+    CFTypeRef name;
+    AXUIElementCopyAttributeValue(elementRef, kAXDescription, (CFTypeRef *)&name);
+    NSString *strName = CFBridgingRelease(name);
+    printf("уровень: %d, роль: %s, название: %s\n", level, [strRole UTF8String], [strName UTF8String]);
+    CFArrayRef childrenList;
+    AXUIElementCopyAttributeValue(elementRef, kAXChildrenAttribute, (CFTypeRef *)&childrenList);
+    if (!childrenList) {
+        return;
     }
-    return NULL;
+    long m = CFArrayGetCount(childrenList);
+    level += 1;
+    for (int i = 0; i < m; i++) {
+        [self printHierarcghy:(AXUIElementRef)CFArrayGetValueAtIndex(childrenList, i) andLevel:level];
+    }
 }
 
 @end

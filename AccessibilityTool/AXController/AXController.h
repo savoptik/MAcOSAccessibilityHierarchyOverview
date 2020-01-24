@@ -10,5 +10,7 @@
 
 @interface AXController : NSObject
 
-+ (NSArray<NSString *> *)getWindowList;
++ (void)printHierarchyForWindowPID:(pid_t)pid;
++ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level;
+
 @end
