@@ -89,8 +89,8 @@ depth = nil
                 } else {
                     pid = nil
                 }
-                if let p = pid {
-                    if let d = depth {
+                if pid != nil {
+                    if depth != nil {
                         mEssage = nil
                         mode = .a11yScan
                     } else {

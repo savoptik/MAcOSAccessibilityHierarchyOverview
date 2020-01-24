@@ -24,8 +24,8 @@ class WindowListManager {
             }
         }
         list = Set(winList).sorted(by: {
-            let first = $0.substring(from: $0.firstIndex(of: " ")!)
-            let second = $1.substring(from: $1.firstIndex(of: " ")!)
+            let first = $0[$0.firstIndex(of: " ")!...]
+            let second = $1[$1.firstIndex(of: " ")!...]
             return first < second
         })
     }
