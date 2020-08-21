@@ -114,10 +114,19 @@ depth = nil
                     depth = nil
                 }
             } else {
-                mode = .error
-                mEssage = "Не указано имя окна"
-                pid = nil
-                depth = nil
+                if let strSTDIn = readLine(),
+                    let firstLex = strSTDIn.split(separator: " ").first,
+                let p = Int32(firstLex) {
+                    mode = .a11yScan
+                    mEssage = nil
+                    pid = p
+                    depth = 0
+                } else {
+                    mode = .error
+                    mEssage = "Не указано имя окна"
+                    pid = nil
+                    depth = nil
+                }
             }
             return
         }
