@@ -11,8 +11,8 @@
 @interface AXController : NSObject
 
 + (void)printHierarchyForWindowPID:(pid_t)pid depth:(int)depth;
-+ (void)printHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth;
++ (void)printHierarchy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth;
 + (NSString *)getHierarchyForWindowPID:(pid_t)pid depth:(int)depth;
-+ (NSString *)getHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth;
++ (NSString *)getHierarchy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth;
 
 @end

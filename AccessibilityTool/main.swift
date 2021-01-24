@@ -40,7 +40,7 @@ case .front:
             df.dateFormat = "dd.MM.yyyy_HH:mm:ss"
             df.timeZone = TimeZone.current
             let strDate = df.string(from: Date())
-            let fileName = "a11y_hierarcghy_" + strDate + ".txt"
+            let fileName = "a11y_hierarchy_" + strDate + ".txt"
             let urlSTR = FileManager.default.homeDirectoryForCurrentUser.relativeString + "Desktop/" + fileName
             guard let url = URL(string: urlSTR) else { fatalError("Не удалось получить URL рабочего стола") }
             do {
