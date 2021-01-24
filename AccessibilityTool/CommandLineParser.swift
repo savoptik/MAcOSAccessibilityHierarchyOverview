@@ -11,17 +11,18 @@ import Foundation
 let helpMessage = "Справка по командам\n" +
 "  -l --list — Список окон\n" +
 "  -g  --getHierarchy — Получить иерархию a11y объектов для PID окна\n" +
+    "-f --front — Получить иерархию для текущего активного окна" +
 "  -h  --help — справка"
 
 public enum WorkMode: String {
-    case a11yScan, help, error, list
+    case a11yScan, help, error, list, front
 }
 
 public class CommandLineParser {
-    private let mode: WorkMode
-    private let mEssage: String?
-    private let pid: Int32?
-    private let depth: Int32?
+    private var mode: WorkMode
+    private var mEssage: String? = nil
+    private var pid: Int32? = nil
+    private var depth: Int32? = nil
     public var workMode: WorkMode {
         get {return mode}
     }
@@ -36,103 +37,132 @@ public class CommandLineParser {
     }
 
     public init(cmdLineParametrs: [String]) {
-        if cmdLineParametrs.count == 1 {
+        let count = cmdLineParametrs.count
+        if count <= 1 {
+            mEssage = Errors.parametersNotSpecified.rawValue + "\n\(helpMessage)"
+        }
+        if count > 4 {
             mode = .error
-            mEssage = "Не введено ни одной команды\n" + helpMessage
-            pid = nil
-            depth = nil
-            return
-        } else if cmdLineParametrs.count > 4 {
-            mode = .error
-            mEssage = "Слишком много параметров"
-            pid = nil
-            depth = nil
-            return
+            mEssage = Errors.TooManyParameters.rawValue + "\n\(helpMessage)"
         }
-        if (cmdLineParametrs[1] == "-h") || (cmdLineParametrs[1] == "--help") {
-            if cmdLineParametrs.count == 2 {
-                mode = .help
-                mEssage = helpMessage
-                pid = nil
-                depth = nil
-            } else {
-                mode = .error
-                mEssage = "Слишком много параметров для команды \"help\""
-                pid = nil
-                depth = nil
-            }
-            return
-        }
-        if (cmdLineParametrs[1] == "-l") || (cmdLineParametrs[1] == "--list") {
-            if cmdLineParametrs.count == 2 {
-                mode = .list
-                mEssage = nil
-                pid = nil
-                depth = nil
-            } else {
-                mode = .error
-                mEssage = "Слишком много параметров для команды \"list\""
-                pid = nil
-                depth = nil
-            }
-            return
-        }
-        if (cmdLineParametrs[1] == "-g") || (cmdLineParametrs[1] == "--getHierarchy") {
-            if cmdLineParametrs.count == 4 {
-                if let d = Int32(cmdLineParametrs[3]) {
-                    depth = d
-                } else {
-depth = nil
-                }
-                if let p = Int32(cmdLineParametrs[2]) {
-                    pid = p
-                } else {
-                    pid = nil
-                }
-                if pid != nil {
-                    if depth != nil {
-                        mEssage = nil
-                        mode = .a11yScan
-                    } else {
-                        mEssage = "Не удалось получить глубину обхода"
-                        mode = .error
+        if let countVar = CLIParms.countValuesForParm[cmdLineParametrs[1]] {
+            if count <= countVar {
+                let cmdPrm = cmdLineParametrs[1]
+                switch CLIParms.getParmType(cmdPrm) {
+                case CLIParmType.help:
+                    mode = .help
+                case CLIParmType.list:
+                    mode = .list
+                case CLIParmType.front:
+                    pid = WindowListManager.activePID
+                    mode = .front
+                case CLIParmType.hierarchy:
+                    mode = .a11yScan
+                    if count == 2 {
+                        if let strSTDIn = readLine(),
+                           let strPID = strSTDIn.split(separator: " ").first,
+                           let tmppid = Int32(strPID),
+                        tmppid >= 0 {
+                            pid = tmppid
+                        } else {
+                            mode = .error
+                            mEssage = Errors.failedToGetSTDIn.rawValue
+                        }
                     }
-                } else {
-                    mEssage = "не удалось получить PID процесса"
+                    if count > 2 {
+                        if let tmppid = Int32(cmdLineParametrs[2]), tmppid >= 0 {
+                            pid = tmppid
+                        } else {
+                            mode = .error
+                            mEssage = Errors.incorrectlySetPID.rawValue
+                            return
+                        }
+                        if count == 4 {
+                            if let tmpD = Int32(cmdLineParametrs[3]), tmpD >= 0 {
+                                depth = tmpD
+                            } else {
+                                mode = .error
+                                mEssage = Errors.theDepthOfTheWalkIsIncorrect.rawValue
+                            }
+                        }
+                    }
+                default:
                     mode = .error
-                }
-            } else if cmdLineParametrs.count == 3  {
-                if let p = Int32(cmdLineParametrs[2]) {
-                    mode = .a11yScan
-                    mEssage = nil
-                    pid = p
-                    depth = 0
-                } else {
-                    mode = .error
-                    mEssage = "Не удалось получить PID процесса"
-                    pid = nil
-                    depth = nil
+                    mEssage = Errors.UnknownError.rawValue + "\n\(helpMessage)"
                 }
             } else {
-                if let strSTDIn = readLine(),
-                    let firstLex = strSTDIn.split(separator: " ").first,
-                let p = Int32(firstLex) {
-                    mode = .a11yScan
-                    mEssage = nil
-                    pid = p
-                    depth = 0
-                } else {
-                    mode = .error
-                    mEssage = "Не указано имя окна"
-                    pid = nil
-                    depth = nil
-                }
+                mode = .error
+                mEssage = Errors.tooManyValuesForParameter.rawValue
             }
-            return
+        } else {
+            mode = .error
+            mEssage = cmdLineParametrs[1] + " \(Errors.parmNotFound.rawValue)\n\(helpMessage)"
         }
-        mode = .error
-        mEssage = "Непонятная ошибка\n" + helpMessage
-        pid = nil
-        depth = nil
+    }
+
+    private enum Errors: String, Error  {
+        case parametersNotSpecified = "Параметры не заданы"
+        case TooManyParameters = "Слишком много параметров"
+        case tooManyValuesForParameter = "Слишком много значений для параметра"
+        case thisParameterCanHaveOnlyOneValue = "Этот параметр может иметь только одно значение"
+        case theDepthOfTheWalkIsIncorrect = "НЕ правильно задана глубина обхода"
+        case incorrectlySetPID = "PID задан неверно"
+        case UnknownError = "Неизвестная ошибка"
+        case parmNotFound = "Параметр не найден"
+        case failedToGetSTDIn = "не удалось получить STDIn"
+    }
+
+    private enum CLIParmType {
+    case help, list, front, hierarchy, fale
+    }
+
+    private struct CLIParms {
+        static let help: (short: String, long: String) = ("-h", "--help")
+        static let list: (short: String, long: String) = ("-l", "--list")
+        static let getHierarchy: (short: String, long: String) = ("-g", "--getHierarchy")
+        static let front: (short: String, long: String) = ("-f", "--front")
+        
+        public static var countValuesForParm: [String: UInt8] {
+            get {
+                return [
+                    help.short : 2, help.long : 2,
+                    list.short : 2, list.long : 2,
+                    getHierarchy.short : 4, getHierarchy.long : 4,
+                    front.short : 2, front.long : 2
+                ]
+            }
+        }
+
+        private static func isHelp(_ parm: String) -> Bool {
+            return parm.lowercased() == help.short.lowercased() || parm.lowercased() == help.long.lowercased()
+        }
+
+        private static func isList(_ parm: String) -> Bool {
+            return parm.lowercased() == list.short.lowercased() || parm.lowercased() == list.long.lowercased()
+        }
+
+        private static func isGetHierarchy(_ parm: String) -> Bool {
+            return parm.lowercased() == getHierarchy.short.lowercased() || parm.lowercased() == getHierarchy.long.lowercased()
+        }
+
+        private static func isFront(_ parm: String) -> Bool {
+            return parm.lowercased() == front.short.lowercased() || parm.lowercased() == front.long.lowercased()
+        }
+
+        public static func getParmType(_ parm: String) -> CLIParmType {
+            if isHelp(parm) {
+                return .help
+            }
+            if isList(parm) {
+                return .list
+            }
+            if isGetHierarchy(parm) {
+                return .hierarchy
+            }
+            if isFront(parm) {
+                return .front
+            }
+            return .fale
+        }
     }
 }

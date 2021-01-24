@@ -54,4 +54,45 @@
     }
 }
 
++ (NSString *)getHierarcghy:(AXUIElementRef)elementRef andLevel:(int)level depth:(int)depth {
+    CFTypeRef role;
+    AXUIElementCopyAttributeValue(elementRef, kAXRoleAttribute, (CFTypeRef *)&role);
+    NSString *strRole = CFBridgingRelease(role);
+    CFTypeRef name;
+    AXUIElementCopyAttributeValue(elementRef, kAXDescription, (CFTypeRef *)&name);
+    NSString *strName = CFBridgingRelease(name);
+    NSString *hierarcghyStap = [NSMutableString stringWithFormat:@"%d %@, название: %@", level, strRole, strName];
+    CFArrayRef childrenList;
+    AXUIElementCopyAttributeValue(elementRef, kAXChildrenAttribute, (CFTypeRef *)&childrenList);
+    if (!childrenList) {
+        return hierarcghyStap;
+    }
+    long m = CFArrayGetCount(childrenList);
+    level += 1;
+    for (int i = 0; i < m; i++) {
+        if ((depth == 0) || (level < depth)) {
+            hierarcghyStap = [NSString stringWithFormat:@"%@\n%@", hierarcghyStap, [self getHierarcghy:(AXUIElementRef)CFArrayGetValueAtIndex(childrenList, i) andLevel:level depth:depth]];
+        }
+    }
+    return hierarcghyStap;
+}
+
++ (NSString *)getHierarchyForWindowPID:(pid_t)pid depth:(int)depth { 
+    // получаем приложение
+    AXUIElementRef appRef = AXUIElementCreateApplication(pid);
+    if (!appRef) {
+        return [NSString stringWithFormat:@"по заданному PID %d  приложений не найдено\n", pid];
+    }
+    // получаем окна этого приложения
+    CFArrayRef windowList;
+    AXUIElementCopyAttributeValue(appRef, kAXWindowsAttribute, (CFTypeRef *)&windowList);
+    // проверяем, если окон нет, выходим
+    if ((!windowList) || CFArrayGetCount(windowList)<1) {
+        return @"У заданного приложения нет окон\n";
+    }
+    // выбираем окно на переднем плане
+    AXUIElementRef windowRef = (AXUIElementRef)CFArrayGetValueAtIndex(windowList, 0);
+    return [self getHierarcghy:windowRef andLevel:0 depth:depth];
+}
+
 @end

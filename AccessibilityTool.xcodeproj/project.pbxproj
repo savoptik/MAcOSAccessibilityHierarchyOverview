@@ -31,6 +31,7 @@
 		FE1D456D23D8474F00B308E6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FE1D456E23D84E9300B308E6 /* CommandLineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineParser.swift; sourceTree = "<group>"; };
 		FE1D457023D86A1100B308E6 /* WindowListManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowListManager.swift; sourceTree = "<group>"; };
+		FE3FB02125BDB45E001DFC15 /* AccessibilityTool.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AccessibilityTool.entitlements; sourceTree = "<group>"; };
 		FE7AB4D723D9B0EA00EF2A8D /* AccessibilityTool-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AccessibilityTool-Bridging-Header.h"; sourceTree = "<group>"; };
 		FE7AB4D823D9B0EA00EF2A8D /* AXController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AXController.m; sourceTree = "<group>"; };
 		FE7AB4DA23D9B11000EF2A8D /* AXController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AXController.h; sourceTree = "<group>"; };
@@ -67,6 +68,7 @@
 		FE1D456523D8457A00B308E6 /* AccessibilityTool */ = {
 			isa = PBXGroup;
 			children = (
+				FE3FB02125BDB45E001DFC15 /* AccessibilityTool.entitlements */,
 				FE1D456623D8457A00B308E6 /* main.swift */,
 				FE1D456E23D84E9300B308E6 /* CommandLineParser.swift */,
 				FE1D457023D86A1100B308E6 /* WindowListManager.swift */,
@@ -271,6 +273,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = AccessibilityTool/AccessibilityTool.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3KRK236DU7;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -290,6 +293,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = AccessibilityTool/AccessibilityTool.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3KRK236DU7;
 				ENABLE_HARDENED_RUNTIME = YES;
