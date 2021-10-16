@@ -25,6 +25,22 @@ Command reference:
 
 --
 
+## Инструкция для сборки
+## Build instructions
+
+### Xcode
+
+Откройте проект в xcode добавьте схему сборки и запустите сборку.
+Open your project in xcode add a build Scheme and start build.
+
+### Command line
+
+```bash
+    $ xcodebuild CODE_SIGN_IDENTITY="" -project AccessibilityTool.xcodeproj
+``````
+
+---
+
 ## Примеры запуска:
 ## Launch examples:
 
