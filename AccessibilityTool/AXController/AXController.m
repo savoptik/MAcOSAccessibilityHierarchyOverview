@@ -39,7 +39,11 @@
     CFTypeRef name;
     AXUIElementCopyAttributeValue(elementRef, kAXDescription, (CFTypeRef *)&name);
     NSString *strName = CFBridgingRelease(name);
-    printf("уровень: %d, роль: %s, название: %s\n", level, [strRole UTF8String], [strName UTF8String]);
+    NSString *strinForPrint = [NSString stringWithFormat:@"%@. role: %@, name: %@\n", [NSNumber numberWithInt:level], strRole, strName];
+    for (int i = 0; i < level; i++) {
+        strinForPrint = [NSString stringWithFormat:@"  %@", strinForPrint];
+    }
+    printf([strinForPrint UTF8String]);
     CFArrayRef childrenList;
     AXUIElementCopyAttributeValue(elementRef, kAXChildrenAttribute, (CFTypeRef *)&childrenList);
     if (!childrenList) {
