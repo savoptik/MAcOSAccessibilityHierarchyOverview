@@ -8,11 +8,11 @@
 
 import Foundation
 
-let helpMessage = "Справка по командам\n" +
-"  -l --list — Список окон\n" +
-"  -g  --getHierarchy — Получить иерархию a11y объектов для PID окна\n" +
-    "-f --front — Получить иерархию для текущего активного окна" +
-"  -h  --help — справка"
+let helpMessage = "Command Reference\n" +
+"  -l --list - List windows\n" +
+"  -g --getHierarchy - Get a11y object hierarchy for the window PID\n" +
+    "  -f --front - Get the hierarchy for the currently active window\n" +
+"  -h --help - help\n"
 
 public enum WorkMode: String {
     case a11yScan, help, error, list, front
@@ -40,6 +40,8 @@ public class CommandLineParser {
         let count = cmdLineParametrs.count
         if count <= 1 {
             mEssage = Errors.parametersNotSpecified.rawValue + "\n\(helpMessage)"
+            mode = .error
+            return
         }
         if count > 4 {
             mode = .error
@@ -101,15 +103,15 @@ public class CommandLineParser {
     }
 
     private enum Errors: String, Error  {
-        case parametersNotSpecified = "Параметры не заданы"
-        case TooManyParameters = "Слишком много параметров"
-        case tooManyValuesForParameter = "Слишком много значений для параметра"
-        case thisParameterCanHaveOnlyOneValue = "Этот параметр может иметь только одно значение"
-        case theDepthOfTheWalkIsIncorrect = "НЕ правильно задана глубина обхода"
-        case incorrectlySetPID = "PID задан неверно"
-        case UnknownError = "Неизвестная ошибка"
-        case parmNotFound = "Параметр не найден"
-        case failedToGetSTDIn = "не удалось получить STDIn"
+        case parametersNotSpecified = "Parameters not set"
+        case TooManyParameters = "Too many parameters"
+        case tooManyValuesForParameter = "Too many values for a parameter"
+        case thisParameterCanHaveOnlyOneValue = "This parameter can only have one value"
+        case theDepthOfTheWalkIsIncorrect = "The depth of the traversal is not set correctly"
+        case incorrectlySetPID = "PID set incorrectly"
+        case UnknownError = "Unknown error"
+        case parmNotFound = "Parameter not found"
+        case failedToGetSTDIn = "failed to get STDIn"
     }
 
     private enum CLIParmType {
