@@ -35,8 +35,9 @@ Open your project in xcode add a build Scheme and start build.
 
 ### Command line
 
-```bash
-    $ xcodebuild CODE_SIGN_IDENTITY="" -project AccessibilityTool.xcodeproj
+```shell
+$ swift package update
+    $ swift build
 ``````
 
 ---
@@ -44,7 +45,7 @@ Open your project in xcode add a build Scheme and start build.
 ## Примеры запуска:
 ## Launch examples:
 
-```Bash
+```shell
     $ ./AccessibilityTool -l
     $ ./AccessibilityTool -g <pid>
     $ ./AccessibilityTool -g <pid> [<depth>]
@@ -53,7 +54,7 @@ Open your project in xcode add a build Scheme and start build.
 ### Полные имена команд:
 ### Full command names:
 
-```Bash
+```shell
     $ ./AccessibilityTool --list
     $ ./AccessibilityTool --getHierarchy <pid>
     $ ./AccessibilityTool --getHierarchy <pid> [<depth>]
