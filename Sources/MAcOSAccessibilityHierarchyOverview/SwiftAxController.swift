@@ -5,6 +5,7 @@
 
 import Foundation
 import AppKit
+import MacOSAccessibilityApplicationWrapper
 
 public class SwiftAxController {
  private let depth: Int
@@ -13,42 +14,26 @@ public class SwiftAxController {
   depth = d
  }
 
- private static func getWindow(FoPID pid: Int32) -> NSRunningApplication? {
-  let apps = NSWorkspace.shared.runningApplications
-  let app: [NSRunningApplication] = apps.filter({ $0.processIdentifier == pid })
-  if app.count == 1 {
-   return app[0]
-  }
-
-  return nil
-}
-
  public func getHierarchy(ForWindowPID pid: Int32) -> String{
-     guard let app = SwiftAxController.getWindow(FoPID: pid) else {
-   fatalError("Failed to get application by this ID")
+  do {
+   let app = try MacOSAccessibilityElementWrapper(WithPID: pid)
+   return getHierarchy(ForAccessibilityElement: app, 0)
+  } catch {
+   fatalError(error.localizedDescription)
   }
-
-     guard let axFocused = app.accessibilityFocusedUIElement as? NSAccessibilityElement else {
-   fatalError("Failed to get accessibility item")
-  }
-
-  return getHierarchy(ForAccessibilityElement: axFocused, 0)
  }
 
- private func getHierarchy(ForAccessibilityElement ax: NSAccessibilityElement, _ level: Int) -> String {
+ private func getHierarchy(ForAccessibilityElement ax: MacOSAccessibilityElementWrapper, _ level: Int) -> String {
   return getHierarchy(ForAccessibilityElement: ax, level, "")
  }
 
- private func getHierarchy(ForAccessibilityElement ax: NSAccessibilityElement, _ level: Int, _ s: String) -> String {
+ private func getHierarchy(ForAccessibilityElement ax: MacOSAccessibilityElementWrapper, _ level: Int, _ s: String) -> String {
   var role = "none"
   if let r = ax.accessibilityRole() {
       role = r.rawValue
   }
 
-  var name = "none"
-  if let n = ax.accessibilityLabel() {
-   name = n
-  }
+  var name = ax.accessibilityLabel()
 
   var returnSTR = s + String(repeating: " ", count: level) + "\(level). Role: \(role), name: \(name)\n"
 
@@ -56,7 +41,7 @@ public class SwiftAxController {
    return returnSTR
   }
 
-  guard let children = ax.accessibilityChildren() as? [NSAccessibilityElement] else {
+  guard let children = ax.accessibilityChildren() as? [MacOSAccessibilityElementWrapper] else {
    fatalError("Failed to get accessible children")
   }
 

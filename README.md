@@ -28,13 +28,6 @@ Command reference:
 ## Инструкция для сборки
 ## Build instructions
 
-### Xcode
-
-Откройте проект в xcode добавьте схему сборки и запустите сборку.
-Open your project in xcode add a build Scheme and start build.
-
-### Command line
-
 ```shell
 $ swift package update
     $ swift build
@@ -46,18 +39,18 @@ $ swift package update
 ## Launch examples:
 
 ```shell
-    $ ./AccessibilityTool -l
-    $ ./AccessibilityTool -g <pid>
-    $ ./AccessibilityTool -g <pid> [<depth>]
+    $ swift run MAcOSAccessibilityHierarchyOverview -l
+    $ swift run MAcOSAccessibilityHierarchyOverview -g <pid>
+    $ swift run MAcOSAccessibilityHierarchyOverview -g <pid> [<depth>]
 ```
 
 ### Полные имена команд:
 ### Full command names:
 
 ```shell
-    $ ./AccessibilityTool --list
-    $ ./AccessibilityTool --getHierarchy <pid>
-    $ ./AccessibilityTool --getHierarchy <pid> [<depth>]
+    $ swift run MAcOSAccessibilityHierarchyOverview --list
+    $ swift run MAcOSAccessibilityHierarchyOverview --getHierarchy <pid>
+    $ swift run MAcOSAccessibilityHierarchyOverview --getHierarchy <pid> [<depth>]
 ```
 
 ---
