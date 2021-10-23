@@ -7,7 +7,7 @@ import Foundation
 import AppKit
 import MacOSAccessibilityApplicationWrapper
 
-public class SwiftAxController {
+public class AxController {
  private let depth: Int
 
  public init(WithDepth d: Int) {
@@ -23,26 +23,30 @@ public class SwiftAxController {
   }
  }
 
- private func getHierarchy(ForAccessibilityElement ax: MacOSAccessibilityElementWrapper, _ level: Int) -> String {
+ private func getHierarchy(ForAccessibilityElement ax: NSAccessibilityElement, _ level: Int) -> String {
   return getHierarchy(ForAccessibilityElement: ax, level, "")
  }
 
- private func getHierarchy(ForAccessibilityElement ax: MacOSAccessibilityElementWrapper, _ level: Int, _ s: String) -> String {
+ private func getHierarchy(ForAccessibilityElement ax: NSAccessibilityElement, _ level: Int, _ s: String) -> String {
   var role = "none"
   if let r = ax.accessibilityRole() {
       role = r.rawValue
   }
 
-  var name = ax.accessibilityLabel()
+  var name = "none"
+  if let n = ax.accessibilityLabel() {
+   name = n
+  }
 
-  var returnSTR = s + String(repeating: " ", count: level) + "\(level). Role: \(role), name: \(name)\n"
+  var returnSTR = s + String(repeating: " ", count: level * 2) + "\(level). Role: \(role), name: \(name)\n"
 
-  if level == depth {
+  if (depth != 0) &&
+             (level == depth) {
    return returnSTR
   }
 
   guard let children = ax.accessibilityChildren() as? [MacOSAccessibilityElementWrapper] else {
-   fatalError("Failed to get accessible children")
+   return returnSTR
   }
 
   for child in children {

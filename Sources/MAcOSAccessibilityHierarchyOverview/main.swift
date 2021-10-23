@@ -25,9 +25,9 @@ case .a11yScan:
     print("Hierarchy for a process: \(cl.windowPID!)")
     if let pid: pid_t = cl.windowPID {
         if let depth = cl.hierarchyDepth {
-            SwiftAxController(WithDepth: Int(depth)).printHierarchy(ForWindowPID: pid)
+            AxController(WithDepth: Int(depth)).printHierarchy(ForWindowPID: pid)
         } else {
-            SwiftAxController(WithDepth: 0).printHierarchy(ForWindowPID: pid)
+            AxController(WithDepth: 0).printHierarchy(ForWindowPID: pid)
         }
     } else {
         print("The process PID could not be recognized")
@@ -35,7 +35,7 @@ case .a11yScan:
 
 case .front:
     if let pid: pid_t = cl.windowPID {
-        let str = SwiftAxController(WithDepth: 0).getHierarchy(ForWindowPID: pid)
+        let str = AxController(WithDepth: 0).getHierarchy(ForWindowPID: pid)
         let df = DateFormatter()
         df.dateFormat = "dd.MM.yyyy_HH:mm:ss"
         df.timeZone = TimeZone.current
